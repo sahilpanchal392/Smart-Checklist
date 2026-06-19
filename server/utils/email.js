@@ -64,6 +64,8 @@ async function sendMail({ to, subject, html }) {
     subject,
     html,
   });
+
+  console.log(`📧 Email sent successfully to: ${to}`);
 }
 
 /**
