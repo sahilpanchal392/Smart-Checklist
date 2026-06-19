@@ -14,6 +14,9 @@ function getTransporter() {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      tls: {
+        rejectUnauthorized: false, // Prevents SMTP handshake failures on cloud servers
+      },
     });
   }
   return null; // no SMTP → will log to console
