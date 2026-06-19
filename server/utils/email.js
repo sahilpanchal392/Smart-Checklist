@@ -12,6 +12,7 @@ function getTransporter() {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      family: 4, // Force IPv4 to prevent ENETUNREACH errors on IPv6-unsupported networks like Render
     });
   }
   if (process.env.EMAIL_HOST) {
@@ -26,6 +27,7 @@ function getTransporter() {
       tls: {
         rejectUnauthorized: false, // Prevents SMTP handshake failures on cloud servers
       },
+      family: 4, // Force IPv4 to prevent ENETUNREACH errors on IPv6-unsupported networks like Render
     });
   }
   return null; // no SMTP → will log to console
