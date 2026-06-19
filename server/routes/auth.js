@@ -80,8 +80,10 @@ router.post("/signup", async (req, res) => {
       verificationOTPExpiry: new Date(Date.now() + 10 * 60 * 1000), // 10 min
     });
 
-    // Send verification OTP
-    await sendVerificationEmail(email, otp);
+    // Send verification OTP in background without awaiting to prevent signup from hanging
+    sendVerificationEmail(email, otp).catch(err => {
+      console.error("Failed to send verification email in background:", err);
+    });
 
     res.status(201).json({
       needsVerification: true,
@@ -160,7 +162,10 @@ router.post("/resend-otp", async (req, res) => {
     user.verificationOTPExpiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
-    await sendVerificationEmail(email, otp);
+    // Send verification OTP in background without awaiting to prevent hanging
+    sendVerificationEmail(email, otp).catch(err => {
+      console.error("Failed to send verification email in background:", err);
+    });
 
     res.json({ message: "A new verification code has been sent to your email." });
   } catch (err) {
@@ -269,7 +274,10 @@ router.post("/forgot-password", async (req, res) => {
     user.resetPasswordExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
     await user.save();
 
-    await sendPasswordResetEmail(email, resetToken);
+    // Send password reset email in background without awaiting to prevent hanging
+    sendPasswordResetEmail(email, resetToken).catch(err => {
+      console.error("Failed to send password reset email in background:", err);
+    });
 
     res.json({ message: "If an account exists with that email, a reset link has been sent." });
   } catch (err) {
