@@ -1,9 +1,9 @@
 const nodemailer = require("nodemailer");
 const dns = require("dns");
 
-// Force Node.js to prioritize IPv4 DNS resolution (avoids ENETUNREACH IPv6 errors on Render)
-if (typeof dns.setDefaultResultOrder === "function") {
-  dns.setDefaultResultOrder("ipv4first");
+// Custom DNS lookup that forces IPv4 resolution (forces family: 4)
+function customLookup(hostname, options, callback) {
+  return dns.lookup(hostname, { ...options, family: 4 }, callback);
 }
 
 /**
@@ -18,7 +18,7 @@ function getTransporter() {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-      family: 4, // Force IPv4 to prevent ENETUNREACH errors on IPv6-unsupported networks like Render
+      lookup: customLookup, // Force IPv4 DNS resolution for this transport
     });
   }
   if (process.env.EMAIL_HOST) {
@@ -33,7 +33,7 @@ function getTransporter() {
       tls: {
         rejectUnauthorized: false, // Prevents SMTP handshake failures on cloud servers
       },
-      family: 4, // Force IPv4 to prevent ENETUNREACH errors on IPv6-unsupported networks like Render
+      lookup: customLookup, // Force IPv4 DNS resolution for this transport
     });
   }
   return null; // no SMTP → will log to console
