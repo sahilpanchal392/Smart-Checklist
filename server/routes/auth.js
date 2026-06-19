@@ -70,27 +70,28 @@ router.post("/signup", async (req, res) => {
     }
 
     const hashed = await bcrypt.hash(password, 12);
-    const otp = generateOTP();
-    
-    console.log(`🔑 [DEBUG] OTP generated for signup (${email}): ${otp}`);
 
     const user = await User.create({
       name: name.trim(), email, password: hashed, role,
       company, phone, employeeId, department, designation, avatar,
-      isVerified: false,
-      verificationOTP: otp,
-      verificationOTPExpiry: new Date(Date.now() + 10 * 60 * 1000), // 10 min
+      isVerified: true, // Default to true (bypassing OTP verification)
     });
 
-    // Send verification OTP in background without awaiting to prevent signup from hanging
-    sendVerificationEmail(email, otp).catch(err => {
-      console.error("Failed to send verification email in background:", err);
-    });
+    // Generate login tokens immediately
+    const token = signAccessToken(user, false);
+    const refreshToken = signRefreshToken(user);
+    const expiresIn = getExpiryMs(false);
+
+    user.refreshToken = refreshToken;
+    await user.save();
 
     res.status(201).json({
-      needsVerification: true,
-      email: user.email,
-      message: "Account created! Check your email for a verification code.",
+      needsVerification: false,
+      token,
+      refreshToken,
+      expiresIn,
+      user: userPayload(user),
+      message: "Account created successfully!",
     });
   } catch (err) {
     console.error("Signup error:", err);

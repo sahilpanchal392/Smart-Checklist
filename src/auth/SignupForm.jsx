@@ -72,12 +72,20 @@ export default function SignupForm() {
 
       const { data } = await axios.post(`${API_URL}/auth/signup`, payload);
 
-      // Redirect to email verification
+      // Redirect to email verification (fallback if somehow required)
       if (data.needsVerification) {
         sessionStorage.setItem("verify_email", data.email);
         navigate("/verify-email");
         return;
       }
+
+      // Log in immediately
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("tokenExpiry", String(Date.now() + data.expiresIn));
+      localStorage.removeItem("pa6_data"); // Clear any existing checklist data
+      navigate(`/${data.user.role}`);
     } catch (err) {
       setError(err.response?.data?.message || "Unable to connect. Please try again.");
     }

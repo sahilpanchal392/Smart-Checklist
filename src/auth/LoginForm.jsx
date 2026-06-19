@@ -76,9 +76,6 @@ export default function LoginForm({ role, onForgotPassword }) {
           />
           <span style={{ fontSize: 12, color: "#666" }}>Remember me</span>
         </label>
-        {role === "customer" && (
-          <button type="button" style={S.forgot} onClick={onForgotPassword}>Forgot password?</button>
-        )}
       </div>
 
       {error && <div style={S.error}>{error}</div>}
