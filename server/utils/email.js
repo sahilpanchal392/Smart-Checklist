@@ -45,7 +45,7 @@ const https = require("https");
 function sendViaResend(to, subject, html) {
   return new Promise((resolve, reject) => {
     const data = JSON.stringify({
-      from: process.env.EMAIL_FROM || "Polycom Innovation <onboarding@resend.dev>",
+      from: "onboarding@resend.dev", // Must be onboarding@resend.dev for unverified free accounts
       to: [to],
       subject: subject,
       html: html,
