@@ -36,8 +36,10 @@ async function sendMail({ to, subject, html }) {
     return;
   }
 
+  const defaultFrom = process.env.EMAIL_USER ? `Polycom Innovation <${process.env.EMAIL_USER}>` : "noreply@polycom.com";
+
   await transporter.sendMail({
-    from: process.env.EMAIL_FROM || "noreply@polycom.com",
+    from: process.env.EMAIL_FROM || defaultFrom,
     to,
     subject,
     html,
