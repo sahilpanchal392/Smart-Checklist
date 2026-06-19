@@ -1,2 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #f1f5f9; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: #0a0a0a;
+  color: #fff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+input::placeholder, textarea::placeholder { color: #333; }
+select option { background: #111; color: #fff; }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #E8001C; }
+::-webkit-scrollbar-thumb:hover { background: #ff1a33; }
+
+input:focus, textarea:focus, select:focus {
+  border-color: #E8001C !important;
+  box-shadow: 0 0 0 2px rgba(232,0,28,0.12) !important;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+button { transition: opacity 0.15s, transform 0.1s; }
+button:active { transform: scale(0.97); }
+
+/* ─── AUTH ───────────────────────────────────────────────────────────────── */
+
+.auth-desktop { display: block; }
+.auth-mobile  { display: none; }
+
+/* Sparkle particles — mobile auth background */
+@keyframes sparkle-float {
+  0%   { transform: translateY(0) scale(0.8);  opacity: 0; }
+  5%   { opacity: 1; }
+  50%  { transform: translateY(-50vh) scale(1.4); opacity: 0.9; }
+  95%  { opacity: 0.3; }
+  100% { transform: translateY(-100vh) scale(0.6); opacity: 0; }
+}
+@keyframes sparkle-fall {
+  0%   { transform: translateY(0) scale(0.8);  opacity: 0; }
+  5%   { opacity: 1; }
+  50%  { transform: translateY(50vh) scale(1.3); opacity: 0.85; }
+  95%  { opacity: 0.3; }
+  100% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+}
+@keyframes sparkle-pulse {
+  0%, 100% { box-shadow: 0 0 6px 2px rgba(232,0,28,0.5); }
+  50%      { box-shadow: 0 0 16px 6px rgba(232,0,28,0.85); }
+}
+
+.auth-sparkles {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+}
+.auth-sparkles .spark {
+  position: absolute;
+  border-radius: 50%;
+  animation: sparkle-float linear infinite, sparkle-pulse ease-in-out infinite;
+}
+.auth-sparkles .spark-fall {
+  animation: sparkle-fall linear infinite, sparkle-pulse ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+  .auth-desktop { display: none !important; }
+  .auth-mobile  { display: block !important; width: 100% !important; }
+  .auth-mobile > div { max-width: 100% !important; width: 100% !important; padding-left: 0 !important; padding-right: 0 !important; }
+  .signup-row2  { grid-template-columns: 1fr !important; gap: 0 !important; }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .auth-brand-inner { padding: 24px 28px !important; }
+}
+
+/* ─── APP ────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .app-root { padding: 0 !important; margin: 0 !important; max-width: 100vw !important; width: 100vw !important; overflow-x: hidden !important; }
+  .app-main-content { padding: 0 !important; max-width: 100% !important; margin: 0 !important; width: 100% !important; }
+  .step-heading-pill { margin-bottom: 8px !important; border-left: none !important; border-right: none !important; border-radius: 0 !important; padding: 12px 14px !important; width: 100% !important; box-sizing: border-box !important; }
+  /* Remove margins and side border/paddings from cards in mobile view */
+  .app-card {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .nav-row {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* ─── PROFILE ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .profile-topbar  { padding: 0 14px !important; height: 56px !important; }
+  .profile-topbar-logo { height: 36px !important; width: 120px !important; }
+  .profile-back-btn  { font-size: 11px !important; padding: 6px 10px !important; }
+  .profile-logout-btn { font-size: 10px !important; padding: 6px 12px !important; }
+  .profile-page    { grid-template-columns: 1fr !important; padding: 16px 0px 40px !important; gap: 16px !important; margin: 0 !important; max-width: 100% !important; width: 100% !important; }
+  .profile-sidebar { position: static !important; padding: 20px 16px !important; border-left: none !important; border-right: none !important; margin: 0 !important; width: 100% !important; box-sizing: border-box !important; }
+  .profile-fields-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+  .profile-main    { padding: 20px 16px !important; border-left: none !important; border-right: none !important; margin: 0 !important; width: 100% !important; box-sizing: border-box !important; }
+  .profile-save-row { flex-direction: column !important; gap: 8px !important; }
+  .profile-save-btn, .profile-cancel-btn { width: 100% !important; justify-content: center !important; }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .profile-page { grid-template-columns: 260px 1fr !important; padding: 24px 20px !important; }
+  .profile-topbar-logo { height: 44px !important; width: 140px !important; }
+}
+
+/* ─── RESPONSIVE LAYOUTS ────────────────────────────────────────────────── */
+
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.grid-3col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.portfolio-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr auto;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: end;
+}
+
+.employee-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.employee-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .grid-2col {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .grid-3col {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .portfolio-row {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+  .portfolio-row > div {
+    padding-top: 0 !important;
+  }
+  .employee-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+  .employee-actions {
+    width: 100% !important;
+    flex-wrap: wrap !important;
+  }
+  .employee-actions button {
+    flex: 1 1 auto !important;
+    justify-content: center !important;
+  }
+  .employee-dashboard-container {
+    padding: 16px 0px 10px !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .step-rail-label {
+    display: none !important;
+  }
+  .step-rail-btn {
+    padding: 12px 2px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar-profile-name {
+    display: none !important;
+  }
+  .logout-btn-text {
+    display: none !important;
+  }
+  .logout-btn-icon {
+    display: inline !important;
+  }
+  .step-heading-pill {
+    padding: 10px 14px !important;
+    gap: 8px !important;
+  }
+}
+
+/* Verification OTP input responsiveness */
+@media (max-width: 400px) {
+  .otp-row {
+    gap: 4px !important;
+  }
+  .otp-input {
+    width: 36px !important;
+    height: 44px !important;
+    font-size: 18px !important;
+  }
+}
+
