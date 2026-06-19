@@ -5,6 +5,15 @@ const nodemailer = require("nodemailer");
  * If EMAIL_HOST is set, use real SMTP. Otherwise, log to console (dev mode).
  */
 function getTransporter() {
+  if (process.env.EMAIL_SERVICE) {
+    return nodemailer.createTransport({
+      service: process.env.EMAIL_SERVICE,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+  }
   if (process.env.EMAIL_HOST) {
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
