@@ -71,6 +71,8 @@ router.post("/signup", async (req, res) => {
 
     const hashed = await bcrypt.hash(password, 12);
     const otp = generateOTP();
+    
+    console.log(`🔑 [DEBUG] OTP generated for signup (${email}): ${otp}`);
 
     const user = await User.create({
       name: name.trim(), email, password: hashed, role,
@@ -161,6 +163,8 @@ router.post("/resend-otp", async (req, res) => {
     user.verificationOTP = otp;
     user.verificationOTPExpiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
+
+    console.log(`🔑 [DEBUG] OTP generated for resend-otp (${email}): ${otp}`);
 
     // Send verification OTP in background without awaiting to prevent hanging
     sendVerificationEmail(email, otp).catch(err => {
