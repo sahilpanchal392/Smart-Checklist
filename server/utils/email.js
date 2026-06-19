@@ -38,63 +38,10 @@ function getTransporter() {
   }
   return null; // no SMTP → will log to console
 }
-
-const https = require("https");
-
-// Send email using Resend's HTTPS API (bypasses Render SMTP port blocking)
-function sendViaResend(to, subject, html) {
-  return new Promise((resolve, reject) => {
-    const data = JSON.stringify({
-      from: "onboarding@resend.dev", // Must be onboarding@resend.dev for unverified free accounts
-      to: [to],
-      subject: subject,
-      html: html,
-    });
-
-    const options = {
-      hostname: "api.resend.com",
-      path: "/emails",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
-        "Content-Length": Buffer.byteLength(data),
-      },
-    };
-
-    const req = https.request(options, (res) => {
-      let body = "";
-      res.on("data", (chunk) => (body += chunk));
-      res.on("end", () => {
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          resolve(body);
-        } else {
-          reject(new Error(`Resend API Error (Status ${res.statusCode}): ${body}`));
-        }
-      });
-    });
-
-    req.on("error", (err) => reject(err));
-    req.write(data);
-    req.end();
-  });
-}
-
 /**
  * Send an email. Falls back to console.log if no SMTP/API is configured.
  */
 async function sendMail({ to, subject, html }) {
-  // If Resend API Key is configured, use HTTPS API (Highly recommended for Render)
-  if (process.env.RESEND_API_KEY) {
-    try {
-      await sendViaResend(to, subject, html);
-      console.log(`📧 Email sent successfully via Resend API to: ${to}`);
-      return;
-    } catch (err) {
-      console.error("Resend API failed, falling back to SMTP...", err);
-    }
-  }
-
   const transporter = getTransporter();
 
   if (!transporter) {
