@@ -160,21 +160,8 @@ router.post("/resend-otp", async (req, res) => {
     if (user.isVerified)
       return res.status(400).json({ message: "Email is already verified." });
 
-    const otp = generateOTP();
-    user.verificationOTP = otp;
-    user.verificationOTPExpiry = new Date(Date.now() + 10 * 60 * 1000);
-    await user.save();
-
-    console.log(`🔑 [DEBUG] OTP generated for resend-otp (${email}): ${otp}`);
-
-    // Send verification OTP in background without awaiting to prevent hanging
-    sendVerificationEmail(email, otp).catch(err => {
-      console.error("Failed to send verification email in background:", err);
-    });
-
-    res.json({ message: "A new verification code has been sent to your email." });
+    res.json({ message: "OTP verification is currently disabled." });
   } catch (err) {
-    console.error("Resend OTP error:", err);
     res.status(500).json({ message: err.message });
   }
 });
@@ -195,14 +182,7 @@ router.post("/login", async (req, res) => {
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(401).json({ message: "Invalid credentials." });
 
-    // Check email verification (existing users without the field are treated as verified)
-    if (user.isVerified === false) {
-      return res.status(403).json({
-        message: "Please verify your email before signing in.",
-        needsVerification: true,
-        email: user.email,
-      });
-    }
+    // Email verification check disabled — users log in directly
 
     // Generate tokens
     const token = signAccessToken(user, !!rememberMe);

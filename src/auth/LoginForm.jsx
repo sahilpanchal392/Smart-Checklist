@@ -20,29 +20,15 @@ export default function LoginForm({ role, onForgotPassword }) {
     setLoading(true);
     try {
       const { data } = await axios.post(`${API_URL}/auth/login`, { ...form, role, rememberMe });
-
-      // If email not verified, redirect to verification
-      if (data.needsVerification) {
-        sessionStorage.setItem("verify_email", data.email);
-        navigate("/verify-email");
-        return;
-      }
-
       localStorage.setItem("token", data.token);
       localStorage.setItem("refreshToken", data.refreshToken);
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("tokenExpiry", String(Date.now() + data.expiresIn));
-      localStorage.removeItem("pa6_data"); // Clear any existing checklist data
+      localStorage.removeItem("pa6_data");
       if (rememberMe) localStorage.setItem("rememberMe", "true");
       else localStorage.removeItem("rememberMe");
       navigate(`/${data.user.role}`);
     } catch (err) {
-      // Handle unverified email from 403
-      if (err.response?.data?.needsVerification) {
-        sessionStorage.setItem("verify_email", err.response.data.email);
-        navigate("/verify-email");
-        return;
-      }
       setError(err.response?.data?.message || "Unable to connect. Please try again.");
     }
     setLoading(false);
