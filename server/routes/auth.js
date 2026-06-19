@@ -89,6 +89,7 @@ router.post("/signup", async (req, res) => {
       message: "Account created! Check your email for a verification code.",
     });
   } catch (err) {
+    console.error("Signup error:", err);
     res.status(500).json({ message: err.message });
   }
 });
@@ -163,6 +164,7 @@ router.post("/resend-otp", async (req, res) => {
 
     res.json({ message: "A new verification code has been sent to your email." });
   } catch (err) {
+    console.error("Resend OTP error:", err);
     res.status(500).json({ message: err.message });
   }
 });
