@@ -1,4 +1,10 @@
 const nodemailer = require("nodemailer");
+const dns = require("dns");
+
+// Force Node.js to prioritize IPv4 DNS resolution (avoids ENETUNREACH IPv6 errors on Render)
+if (typeof dns.setDefaultResultOrder === "function") {
+  dns.setDefaultResultOrder("ipv4first");
+}
 
 /**
  * Create a transporter.
