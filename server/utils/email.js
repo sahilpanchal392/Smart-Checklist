@@ -96,7 +96,7 @@ async function sendVerificationEmail(email, otp) {
  * Send a password-reset link.
  */
 async function sendPasswordResetEmail(email, resetToken) {
-  const link = `${process.env.FRONTEND_URL || "http://localhost:5173"}/reset-password?token=${resetToken}`;
+  const link = `${process.env.FRONTEND_URL || "https://polycom-checklist.netlify.app"}/reset-password?token=${resetToken}`;
   await sendMail({
     to: email,
     subject: "Polycom — Reset Your Password",
